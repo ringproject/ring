@@ -15,4 +15,14 @@ public final class RingAddress
         this.key = key;
         this.address = address;
     }
+
+    public string getKey()
+    {
+        return key;
+    }
+
+    public Address getAdress()
+    {
+        return address;
+    }
 }
