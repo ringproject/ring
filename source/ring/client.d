@@ -35,6 +35,9 @@ public final class RingClient : Thread
 
         /* Initiate the listeneing post */
         initListeningPost(listeningAddress);
+
+        /* Start the worker */
+        start();
     }
 
     /**
@@ -44,6 +47,8 @@ public final class RingClient : Thread
     {
         /* TODO: Don't forget to catch an exception here */
         listeningPost = new Socket(address.addressFamily, SocketType.STREAM, ProtocolType.TCP);
+        listeningPost.bind(address);
+        listeningPost.listen(0);
     }
 
     /**
