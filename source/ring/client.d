@@ -3,6 +3,7 @@ module ring.client;
 import ring.address;
 import ring.identity;
 import core.thread;
+import std.socket;
 
 public final class RingClient : Thread
 {
@@ -10,6 +11,7 @@ public final class RingClient : Thread
     * Client details
     */
     private RingIdentity identity;
+    private Socket listeningPost;
 
     /**
     * Peering info
@@ -22,7 +24,7 @@ public final class RingClient : Thread
     * given RingIdentity and a list of peers
     * to use for connecting
     */
-    this(RingIdentity identity, RingAddress[] peers)
+    this(RingIdentity identity, Address listeningAddress, RingAddress[] peers)
     {
         /* Set the worker function */
         super(&worker);
@@ -30,6 +32,18 @@ public final class RingClient : Thread
         /* Save details */
         this.identity = identity;
         availablePeers = peers;
+
+        /* Initiate the listeneing post */
+        initListeningPost(listeningAddress);
+    }
+
+    /**
+    * Initialize the listening socket
+    */
+    private void initListeningPost(Address address)
+    {
+        /* TODO: Don't forget to catch an exception here */
+        listeningPost = new Socket(address.addressFamily, SocketType.STREAM, ProtocolType.TCP);
     }
 
     /**
