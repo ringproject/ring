@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"Tristan B. Kildaire"
+	],
+	"copyright": "Copyright © 2021, Tristan B. Kildaire",
+	"dependencies": {
+		"bformat": "~>3.1.0",
+		"gogga": "~>0.0.2"
+	},
+	"description": "CoronaChord",
+	"license": "AGPL v3",
+	"name": "ring"
+}
