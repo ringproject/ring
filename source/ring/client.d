@@ -4,6 +4,6 @@ public final class RingClient
 {
     this()
     {
-
+        
     }
 }
