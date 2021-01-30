@@ -5,14 +5,8 @@ Ring client and daemon
 
 A client, say now **Alice**, connects to **Bob** with an address that looks like this:
 
-````
-bob:<key>@<address>
-````
-
-or (without the custom name):
-
 ```
 <key>@<address>
 ```
 
-Where `<key>` is **Bob's** public key.
+Where `<key>` is **Bob's** public key and `<address>` is the IP address and port that goes to **Bob's** ring client.
