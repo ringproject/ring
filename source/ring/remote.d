@@ -5,6 +5,7 @@ import core.thread;
 import bmessage;
 import gogga;
 import ring.client;
+import std.conv : to;
 
 public final class RingRemoteClient : Thread
 {
@@ -57,6 +58,7 @@ public final class RingRemoteClient : Thread
     private void process(byte[] payload)
     {
         ubyte command = payload[0];
+        gprintln("Processing: "~to!(string)(payload));
 
     }
 }
