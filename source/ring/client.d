@@ -77,6 +77,9 @@ public final class RingClient : Thread
     private void worker()
     {
         /* TODO: Initiate outbound peerings here */
+        RingAddress chosenPeer = selectRandomPeer();
+        gprintln("Selected peer for connecting to ring network: "~chosenPeer.toString());
+        establishLRPeers(chosenPeer);
 
 
         /* Accept inbound connections (for peering) */
@@ -113,5 +116,21 @@ public final class RingClient : Thread
     private void establishLRPeers(RingAddress initialPeer)
     {
         
+    }
+
+    /**
+    * Returns a random peer address from the available
+    * ones provided
+    */
+    private RingAddress selectRandomPeer()
+    {
+        RingAddress selectedPeer;
+
+        // import std.random : dice;
+        // dice()
+
+        selectedPeer = availablePeers[0];
+
+        return selectedPeer;
     }
 }
