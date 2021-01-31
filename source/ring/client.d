@@ -2,6 +2,7 @@ module ring.client;
 
 import ring.address;
 import ring.identity;
+import ring.peer;
 import core.thread;
 import std.socket;
 
@@ -12,6 +13,12 @@ public final class RingClient : Thread
     */
     private RingIdentity identity;
     private Socket listeningPost;
+
+    /**
+    * Peer info
+    */
+    private RingPeer left;
+    private RingPeer right;
 
     /**
     * Peering info
@@ -62,6 +69,20 @@ public final class RingClient : Thread
     * continue to accept connections to join the ring
     */
     private void worker()
+    {
+        /* TODO: Initiate outbound peerings here */
+
+
+        /* Accept inbound connections (for peering) */
+    }
+
+    /**
+    * Given a single node, this will establish our
+    * left-hand side and right-hand side nodes
+    *
+    *
+    */
+    private void establishLRPeers(RingAddress initialPeer)
     {
 
     }
