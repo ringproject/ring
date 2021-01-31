@@ -119,8 +119,8 @@ public final class RingClient : Thread
         RingPeer selectedPeer = getAvailablePeering();
         gprintln("Selected peer (connect-success): "~selectedPeer.toString());
 
-        /* TODO: Get right hand peer */
-        RingPeer rightHand = selectedPeer.getRightHandPeer();
+        /* TODO: Authenticate (Gives us right hand peer) */
+        RingPeer rightHand = selectedPeer.authenticate();
     }
 
     /**
@@ -137,7 +137,7 @@ public final class RingClient : Thread
         foreach(RingAddress ringAddress; availablePeers)
         {
             /* Create a RingPeer */
-            ringPeer = new RingPeer(ringAddress);
+            ringPeer = new RingPeer(ringAddress, identity);
 
             try
             {
