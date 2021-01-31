@@ -14,5 +14,5 @@ void main(string[] args)
 	}
 
 	RingAddress[] peers;
-	RingClient ringClient = new RingClient(null, getAddress("0.0.0.0:7777")[0], peers);
+	RingClient ringClient = new RingClient(null, getAddress("0.0.0.0", 7777)[0], peers);
 }
