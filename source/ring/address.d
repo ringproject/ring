@@ -10,13 +10,11 @@ public final class RingAddress
     */
     private string key;
     private Address address;
-    private ushort port;
 
-    this(string key, Address address, ushort port)
+    this(string key, Address address)
     {
         this.key = key;
         this.address = address;
-        this.port = port;
     }
 
     public string getKey()
@@ -31,6 +29,6 @@ public final class RingAddress
 
     public override string toString()
     {
-        return "RingPeer [Key: "~key~", Address: "~address.toString()~", Port: "~to!(string)(port)~"]";
+        return "RingPeer [Key: "~key~", Address: "~address.toString()~"]";
     }
 }

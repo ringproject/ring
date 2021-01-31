@@ -1,8 +1,12 @@
 {
-    "peers" : ["key@0.0.0.0:7778", "0.0.0.0:7779"],
+    "peers" : ["key@0.0.0.0:7778", "poes@0.0.0.0:7779"],
     "identity" : {
-        "privateKey" : "",
-        "publicKey" : "",
+        "privateKey" : "privKey1",
+        "publicKey" : "pubKey1",
         "name" : "tetsingRig"
+    },
+    "network" : {
+        "address" : "0.0.0.0",
+        "port" : "7777"
     }
 }
