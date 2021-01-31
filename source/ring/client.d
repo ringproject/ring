@@ -124,6 +124,8 @@ public final class RingClient : Thread
     * Goes through each peer in availablePeers and attempts to
     * connect to them, cycles to the next if the current peer
     * fails to connect
+    *
+    * TODO: On failure, total, return null
     */
     private RingPeer getAvailablePeering()
     {
