@@ -84,6 +84,6 @@ public final class RingClient : Thread
     */
     private void establishLRPeers(RingAddress initialPeer)
     {
-
+        
     }
 }
