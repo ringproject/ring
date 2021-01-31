@@ -1,6 +1,8 @@
 import std.stdio;
 import gogga;
 import ring.client;
+import std.socket;
+import ring.address;
 
 void main(string[] args)
 {
@@ -10,4 +12,7 @@ void main(string[] args)
 	{
 
 	}
+
+	RingAddress[] peers;
+	RingClient ringClient = new RingClient(null, getAddress("0.0.0.0:7777")[0], peers);
 }
