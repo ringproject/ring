@@ -60,5 +60,11 @@ public final class RingRemoteClient : Thread
         ubyte command = payload[0];
         gprintln("Processing: "~to!(string)(payload));
 
+        if(command == 0)
+        {
+            ubyte nameLen = payload[1];
+            string name = cast(string)payload[2..2+nameLen];
+            gprintln("Node wants to authenticate with name "~name);
+        }
     }
 }
