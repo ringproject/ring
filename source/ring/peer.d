@@ -29,6 +29,12 @@ public final class RingPeer
         /* TODO: Send message to this RingPeer asking for his right-hand side peer */
         RingPeer rightHandPeer;
 
+        /* TODO: Receive [nameLen, name] as per README.md */
+        // byte[] 
+        
+
+        /* TODO: Receive [keyLen, key] as per README.md */
+
 
 
         return rightHandPeer;

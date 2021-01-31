@@ -3,8 +3,12 @@ module ring.client;
 import ring.address;
 import ring.identity;
 import ring.peer;
+import ring.remote;
 import core.thread;
 import std.socket;
+import core.sync.mutex;
+import gogga;
+import std.conv;
 
 public final class RingClient : Thread
 {
@@ -13,6 +17,8 @@ public final class RingClient : Thread
     */
     private RingIdentity identity;
     private Socket listeningPost;
+    private RingRemoteClient[] remoteClients;
+    private Mutex remoteClientsLock;
 
     /**
     * Peer info
@@ -74,6 +80,27 @@ public final class RingClient : Thread
 
 
         /* Accept inbound connections (for peering) */
+    }
+
+    /**
+    * Here we listen for incoming connections to our node
+    */
+    private void listenPost()
+    {
+        while(true)
+        {
+            /* Block to dequeue a connection */
+            Socket remoteSocket = listeningPost.accept();
+            gprintln("ListeningPost: New connection "~to!(string)(remoteSocket));
+
+            /* Create a new connection handler */
+            RingRemoteClient remoteClient = new RingRemoteClient(remoteSocket, this);
+
+            /* TODO: Add to connection queue */
+
+            /* Start the connection handler */
+            remoteClient.start();
+        }
     }
 
     /**

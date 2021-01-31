@@ -14,3 +14,9 @@ Where `<key>` is **Bob's** public key and `<address>` is the IP address and port
 ### Notes
 
 Clock-wise peering
+
+### Authentication handshake
+
+```
+[-- bformat --][-- nameLen (1 byte) --][-- name (n-bytes) --][-- keyLen (4 bytes) --][-- key (n-bytes) --]
+```
