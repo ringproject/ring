@@ -23,4 +23,9 @@ public final class RingIdentity
         this.privateKey = privateKey;
         this.name = name;
     }
+
+    public override string toString()
+    {
+        return "RingIdentity [Name: "~name~", PublicKey: "~publicKey~", PrivateKey: (hidden)]";
+    }
 }

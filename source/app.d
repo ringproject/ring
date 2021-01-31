@@ -6,6 +6,7 @@ import ring.address;
 import std.json;
 import std.string;
 import std.conv;
+import ring.identity;
 
 void main(string[] args)
 {
@@ -39,14 +40,19 @@ private void configStart(string filename)
 		/* Read the configuration file */
 
 		/* Read the peers */
-
 		RingAddress[] peers = getPeersConfig(config["peers"]);
+
+		/* Read the identity */
+		RingIdentity identity = getIdentityConfig(config["identity"]);
+		gprintln("Found identity "~identity.toString());
+
+		/* Read the network parameters */
 	
 	
 	
 	
 		/* Create the client and start it */
-		RingClient ringClient = new RingClient(null, getAddress("0.0.0.0", 7777)[0], peers);
+		RingClient ringClient = new RingClient(identity, getAddress("0.0.0.0", 7777)[0], peers);
 	}
 	catch(JSONException e)
 	{
@@ -85,4 +91,14 @@ private RingAddress[] getPeersConfig(JSONValue peerBlock)
 	}
 
 	return peers;
+}
+
+private RingIdentity getIdentityConfig(JSONValue identityBlock)
+{
+	RingIdentity identity;
+
+	identity = new RingIdentity(identityBlock["publicKey"].str(), identityBlock["privateKey"].str(), identityBlock["name"].str());
+
+
+	return identity;
 }
