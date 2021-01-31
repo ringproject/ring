@@ -17,7 +17,7 @@ public final class RingPeer
         this.peerAddress = peerAddress;
     }
 
-    private void doConnect()
+    public void doConnect()
     {
         /* Intialize a new socket and connect */
         socket = new Socket(peerAddress.getAdress().addressFamily, SocketType.STREAM, ProtocolType.TCP);

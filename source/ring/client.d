@@ -115,7 +115,37 @@ public final class RingClient : Thread
     */
     private void establishLRPeers(RingAddress initialPeer)
     {
-        
+        /* Get a working RingPeer (connection) */
+        RingPeer selectedPeer = getAvailablePeering();
+        gprintln("Selected peer (connect-success): "~selectedPeer.toString());
+    }
+
+    /**
+    * Goes through each peer in availablePeers and attempts to
+    * connect to them, cycles to the next if the current peer
+    * fails to connect
+    */
+    private RingPeer getAvailablePeering()
+    {
+        /* Try connecting to one of the peers, move to next if fail */
+        RingPeer ringPeer;
+        foreach(RingAddress ringAddress; availablePeers)
+        {
+            /* Create a RingPeer */
+            ringPeer = new RingPeer(ringAddress);
+
+            try
+            {
+                ringPeer.doConnect();
+                break;
+            }
+            catch(SocketOSException e)
+            {
+
+            }
+        }
+
+        return ringPeer;
     }
 
     /**
