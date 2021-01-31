@@ -80,6 +80,7 @@ public final class RingClient : Thread
 
 
         /* Accept inbound connections (for peering) */
+        listenPost();
     }
 
     /**
