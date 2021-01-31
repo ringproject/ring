@@ -118,6 +118,9 @@ public final class RingClient : Thread
         /* Get a working RingPeer (connection) */
         RingPeer selectedPeer = getAvailablePeering();
         gprintln("Selected peer (connect-success): "~selectedPeer.toString());
+
+        /* TODO: Get right hand peer */
+        RingPeer rightHand = selectedPeer.getRightHandPeer();
     }
 
     /**
