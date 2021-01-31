@@ -1,3 +1,8 @@
 {
-    
+    "peers" : ["key@0.0.0.0:7778", "0.0.0.0:7779"],
+    "identity" : {
+        "privateKey" : "",
+        "publicKey" : "",
+        "name" : "tetsingRig"
+    }
 }
