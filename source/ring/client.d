@@ -117,9 +117,51 @@ public final class RingClient : Thread
 
         gprintln("Selected peer (connect-success): "~selectedPeer.toString());
 
-        /* TODO: Authenticate (Gives us right hand peer) */
-        RingPeer rightHand = selectedPeer.authenticate();
+        /* TODO: Authenticate */
+        lockPeering();
+
+
+        /**
+        * If both are empty then L=newPeer and R=newPeer
+        */
+        if(left is null && right is null)
+        {
+            right = selectedPeer;
+            left = right;
+        }
+        else
+        {
+            right = selectedPeer.authenticate();
+        }
+        
+
+        gprintln("State now: "~this.toString());
+        unlockPeering();
+
+        
     }
+
+    /**
+    * Set the left peer (unsafe, not memory unsafe but it must be locked for algorithmn)
+    *
+    * a.k.a. use this within `client.lockPeering() <-> (your code) <-> client.unlockPeering()`
+    */
+    public void setLeft(RingPeer left)
+    {
+        this.left = left;
+    }
+
+    /**
+    * Set the right peer (unsafe, not memory unsafe but it must be locked for algorithmn)
+    *
+    * a.k.a. use this within `client.lockPeering() <-> (your code) <-> client.unlockPeering()`
+    */
+    public void setRight(RingPeer right)
+    {
+        this.right = right;
+    }
+
+    
 
     /**
     * Goes through each peer in availablePeers and attempts to
@@ -189,5 +231,11 @@ public final class RingClient : Thread
     {
         /* TODO: Implement me */
         return true;
+    }
+
+
+    public override string toString()
+    {
+        return "RingClient [L: "~to!(string)(left)~", R: "~to!(string)(right)~"]";
     }
 }

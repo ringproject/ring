@@ -39,7 +39,7 @@ public final class RingPeer
     public RingPeer authenticate()
     {
         /* Lock the peering mutex */
-        client.lockPeering();
+        //client.lockPeering();
 
         /* TODO: Send (our) [nameLen, name] as per README.md (auth-init) */
         byte[] authMessage;
@@ -68,7 +68,7 @@ public final class RingPeer
         /* TODO: Receive [keyLen, key] as per README.md */
 
         /* Unlock the peering mutex */
-        client.unlockPeering();
+        //client.unlockPeering();
 
         return rightHandPeer;
     }
@@ -76,5 +76,10 @@ public final class RingPeer
     private void worker()
     {
 
+    }
+
+    public override string toString()
+    {
+        return peerAddress.toString();
     }
 }
