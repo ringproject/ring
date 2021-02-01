@@ -48,11 +48,22 @@ public final class RingClient : Thread
         this.identity = identity;
         availablePeers = peers;
 
+        /* Initialize the mutexes */
+        initLocks();
+
         /* Initiate the listeneing post */
         initListeningPost(listeningAddress);
 
         /* Start the worker */
         start();
+    }
+
+    /**
+    * Initialize the mutexex
+    */
+    private void initLocks()
+    {
+        peeringLock = new Mutex();
     }
 
     /**
