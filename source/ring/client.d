@@ -123,19 +123,24 @@ public final class RingClient : Thread
 
         /**
         * If both are empty then L=newPeer and R=newPeer
+        *
+        * TODO: Check for mutex use if really needed here
         */
         if(left is null && right is null)
         {
-            right = selectedPeer;
+            right = selectedPeer.authenticate();
             left = right;
+
+            gprintln("(client.d) Both L=null and R=null case", DebugType.WARNING);
         }
         else
         {
             right = selectedPeer.authenticate();
+            gprintln("(client.d) R=null case", DebugType.WARNING);
         }
         
 
-        gprintln("State now: "~this.toString());
+        gprintln("(client.d) State now: "~this.toString());
         unlockPeering();
 
         
