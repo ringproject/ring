@@ -6,11 +6,12 @@ import bmessage;
 import ring.identity;
 import gogga;
 import ring.client;
+import core.thread;
 
-public final class RingPeer
+public final class RingPeer : Thread
 {
     /**
-    * My details
+    * My details (inbound and outbound)
     */
     private RingIdentity identity;
     private RingClient client;
@@ -19,9 +20,17 @@ public final class RingPeer
     * Peer's connection
     */
     private Socket socket;
-    private RingAddress peerAddress;
     private string peerName;
 
+    /**
+    * Peer's connection (outbound)
+    */
+    private RingAddress peerAddress;
+
+
+    /**
+    * Creates a new RingPeer (outbound)
+    */
     this(RingAddress peerAddress, RingIdentity identity, RingClient client)
     {
         this.peerAddress = peerAddress;
@@ -29,6 +38,19 @@ public final class RingPeer
         this.client = client;
     }
 
+    /**
+    * Creates a new RingPeer (inbound)
+    */
+    this(Socket socket, RingClient client)
+    {
+        super(&handlePeerInbound);
+        this.socket = socket;
+        this.client = client;
+    }
+
+    /**
+    * Creates a connection to the remote peer (outbound)
+    */
     public void doConnect()
     {
         /* Intialize a new socket and connect */
@@ -36,7 +58,90 @@ public final class RingPeer
         socket.connect(peerAddress.getAdress());  
     }
 
-    public RingPeer authenticate()
+    /**
+    * Handles the connection with the remote peer (inbound)
+    */
+    private void handlePeerInbound()
+    {
+        while (true)
+        {
+            /* Block to receive a message */
+            byte[] recvPayload;
+            bool recvStatus = receiveMessage(socket, recvPayload);
+
+            /* If the receive was successful then process the command */
+            if (recvStatus)
+            {
+                handlePeerInbound_process(recvPayload);
+            }
+            /* If not, then stop the listening post */
+            else
+            {
+                gprintln("Client on RingListener has a receive error", DebugType.ERROR);
+                break;
+            }
+        }
+    }
+
+    private void handlePeerInbound_process(byte[] payload)
+    {
+        ubyte command = payload[0];
+        gprintln("Processing: "~to!(string)(payload));
+
+        /* Authentication */
+        if(command == 0)
+        {
+            /* Lock the peering mutex */
+            client.lockPeering();
+
+            ubyte nameLen = payload[1];
+            string name = cast(string)payload[2..2+nameLen];
+            gprintln("(Ingoing) Node wants to authenticate with name "~name);
+
+            /* TODO: Send (our) [nameLen, name] as per README.md */
+            byte[] authMessage;
+            authMessage ~= [cast(byte)client.getIdentity().getName().length];
+            authMessage ~= client.getIdentity().getName();
+            sendMessage(socket, authMessage);
+
+
+
+
+            /**
+            * If both are empty then L=newPeer and R=newPeer
+            *
+            * TODO: Check for mutex use if really needed here
+            */
+            import ring.peer;
+            chosenPeer = new RingPeer();
+            if(client.left is null && client.right is null)
+            {
+                client.right = chosenPeer;
+                client.left = client.right;
+
+                gprintln("(remote.d) Both L=null and R=null case", DebugType.WARNING);
+            }
+            else
+            {
+                client.right = chosenPeer.authenticate();
+                gprintln("(remote.d) R=null case", DebugType.WARNING);
+            }
+            
+
+            gprintln("(remote.d) State now: "~this.toString());
+
+
+
+
+            /* Unlock the peering mutex */
+            client.unlockPeering();
+        }
+    }
+
+    /**
+    * Authenticates with the remote peer (outbound)
+    */
+    public RingPeer authenticateOutbound()
     {
         /* Lock the peering mutex */
         //client.lockPeering();
@@ -71,6 +176,14 @@ public final class RingPeer
         //client.unlockPeering();
 
         return rightHandPeer;
+    }
+
+    /**
+    * Authenticates with the remote peer (inbound)
+    */
+    public void authenticateInbound()
+    {
+
     }
 
     private void worker()
