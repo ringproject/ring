@@ -56,6 +56,7 @@ public final class RingPeer : Thread
         /* Intialize a new socket and connect */
         socket = new Socket(peerAddress.getAdress().addressFamily, SocketType.STREAM, ProtocolType.TCP);
         socket.connect(peerAddress.getAdress());
+        gprintln("(Outbound) Created socket for outbound connection to node @ "~peerAddress.toString());
     }
 
     /**
@@ -72,12 +73,13 @@ public final class RingPeer : Thread
             /* If the receive was successful then process the command */
             if (recvStatus)
             {
+                /* Process the command */
                 handlePeerInbound_process(recvPayload);
             }
             /* If not, then stop the listening post */
             else
             {
-                gprintln("Client on RingListener has a receive error", DebugType.ERROR);
+                gprintln("(Inbound) Receive error occurred, stopping RingPeer", DebugType.ERROR);
                 break;
             }
         }
@@ -198,15 +200,6 @@ public final class RingPeer : Thread
 
     public override string toString()
     {
-        // /* If we are an inbound node */
-        // if(peerAddress is null)
-        // {
-        //     return socket.toString();
-        // }
-        // /* If we are an outbound node */
-        // else
-        // {
-            return peerAddress.toString();
-        // }
+        return "RingPeer ("~peerAddress.toString()~")";
     }
 }
