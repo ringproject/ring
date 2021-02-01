@@ -34,7 +34,7 @@ public final class RingPeer
 
     public RingPeer authenticate()
     {
-        /* TODO: Send (our) [nameLen, name] as per README.md */
+        /* TODO: Send (our) [nameLen, name] as per README.md (auth-init) */
         byte[] authMessage;
         authMessage ~= [0, cast(byte)identity.getName().length];
         authMessage ~= identity.getName();

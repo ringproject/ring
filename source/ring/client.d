@@ -9,6 +9,7 @@ import std.socket;
 import core.sync.mutex;
 import gogga;
 import std.conv;
+import ring.listener;
 
 public final class RingClient : Thread
 {
@@ -16,9 +17,9 @@ public final class RingClient : Thread
     * Client details
     */
     private RingIdentity identity;
-    private Socket listeningPost;
     private RingRemoteClient[] remoteClients;
     private Mutex remoteClientsLock;
+    private RingListener listeningPost;
 
     /**
     * Peer info
@@ -58,10 +59,8 @@ public final class RingClient : Thread
     */
     private void initListeningPost(Address address)
     {
-        /* TODO: Don't forget to catch an exception here */
-        listeningPost = new Socket(address.addressFamily, SocketType.STREAM, ProtocolType.TCP);
-        listeningPost.bind(address);
-        listeningPost.listen(0);
+        /* Create a new listening post here */
+        listeningPost = new RingListener(address, this);
     }
 
     /**
@@ -76,35 +75,13 @@ public final class RingClient : Thread
     */
     private void worker()
     {
+        /* Start the listening post (Accept inbound connections (for peering) */
+        listeningPost.start();
+
         /* TODO: Initiate outbound peerings here */
         RingAddress chosenPeer = selectRandomPeer();
         gprintln("Selected peer for connecting to ring network: "~chosenPeer.toString());
         establishLRPeers(chosenPeer);
-
-
-        /* Accept inbound connections (for peering) */
-        listenPost();
-    }
-
-    /**
-    * Here we listen for incoming connections to our node
-    */
-    private void listenPost()
-    {
-        while(true)
-        {
-            /* Block to dequeue a connection */
-            Socket remoteSocket = listeningPost.accept();
-            gprintln("ListeningPost: New connection "~to!(string)(remoteSocket));
-
-            /* Create a new connection handler */
-            RingRemoteClient remoteClient = new RingRemoteClient(remoteSocket, this);
-
-            /* TODO: Add to connection queue */
-
-            /* Start the connection handler */
-            remoteClient.start();
-        }
     }
 
     /**
@@ -122,7 +99,7 @@ public final class RingClient : Thread
         {
             gprintln("No peers were available for a connection, sleeping a little zzz...", DebugType.WARNING);
             Thread.sleep(dur!("seconds")(2));
-            
+
             selectedPeer = getAvailablePeering();
         }
 
