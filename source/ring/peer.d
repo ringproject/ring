@@ -112,7 +112,7 @@ public final class RingPeer : Thread
 
             /* Close our outbound connection */
             socket.close();
-            
+
             client.unlockPeering();
             return;
         }
@@ -145,6 +145,10 @@ public final class RingPeer : Thread
         if(client.isConnected)
         {
             gprintln("(Inbound) Already connected, stopping", DebugType.WARNING);
+
+            /* Close our outbound connection */
+            socket.close();
+            
             client.unlockPeering();
             return;
         }
