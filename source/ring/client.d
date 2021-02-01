@@ -184,4 +184,10 @@ public final class RingClient : Thread
     {
         peeringLock.unlock();
     }
+
+    public bool unsafe_isPeered()
+    {
+        /* TODO: Implement me */
+        return true;
+    }
 }

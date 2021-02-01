@@ -72,7 +72,7 @@ public final class RingRemoteClient : Thread
 
             /* TODO: Send (our) [nameLen, name] as per README.md */
             byte[] authMessage;
-            authMessage ~= [0, cast(byte)client.getIdentity().getName().length];
+            authMessage ~= [cast(byte)client.getIdentity().getName().length];
             authMessage ~= client.getIdentity().getName();
             sendMessage(socket, authMessage);
 
