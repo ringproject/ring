@@ -105,6 +105,18 @@ public final class RingPeer : Thread
         /* Lock the peering mutex */
         client.lockPeering();
 
+        /* Check if authenication has already taken place, if so, stop */
+        if(client.isConnected)
+        {
+            gprintln("(Outbound) Already connected, stopping", DebugType.WARNING);
+            client.unlockPeering();
+            return;
+        }
+        else
+        {
+            gprintln("(Outbound) Not connected, attempting...", DebugType.WARNING);
+        }
+
         /* TODO: Send (our) [nameLen, name] as per README.md (auth-init) */
         byte[] authMessage;
         authMessage ~= [0, cast(byte) identity.getName().length];
@@ -143,6 +155,10 @@ public final class RingPeer : Thread
 
         gprintln("(client.d) State now: " ~ client.toString());
 
+        /* Authentication has worked, state it as so */
+        client.isConnected = true;
+
+
         /* Unlock the peering mutex */
         client.unlockPeering();
     }
@@ -154,6 +170,18 @@ public final class RingPeer : Thread
     {
         /* Lock the peering mutex */
         client.lockPeering();
+
+        /* Check if authenication has already taken place, if so, stop */
+        if(client.isConnected)
+        {
+            gprintln("(Inbound) Already connected, stopping", DebugType.WARNING);
+            client.unlockPeering();
+            return;
+        }
+        else
+        {
+            gprintln("(Inbound) Not connected, attempting...", DebugType.WARNING);
+        }
 
         /* Get (their) [nameLen, name] */
         ubyte nameLen = payload[1];
@@ -193,6 +221,10 @@ public final class RingPeer : Thread
         }
 
         gprintln("(remote.d) State now: " ~ client.toString());
+
+
+        /* Authentication has worked, state it as so */
+        client.isConnected = true;
 
         /* Unlock the peering mutex */
         client.unlockPeering();

@@ -26,6 +26,7 @@ public final class RingClient : Thread
     */
     public RingPeer left;
     public RingPeer right;
+    public bool isConnected;
 
     /**
     * Peering info
@@ -88,20 +89,22 @@ public final class RingClient : Thread
     {
         /* Start the listening post (Accept inbound connections (for peering) */
         listeningPost.start();
+        
 
-        /* TODO: Initiate outbound peerings here */
-        RingAddress chosenPeer = selectRandomPeer();
-        gprintln("Selected peer for connecting to ring network: "~chosenPeer.toString());
-        establishLRPeers(chosenPeer);
+        /* TODO: Try connect to any available peer */
+        RingPeer connectedPeer = getOnlineOutboundPeer();
+        gprintln("(Outbound-Initiate) Connected to peer @ "~connectedPeer.toString());
+
+        /* Authenticate the peer (outbound) */
+        connectedPeer.authenticateOutbound();
     }
 
     /**
-    * Given a single node, this will establish our
-    * left-hand side and right-hand side nodes
-    *
-    *
+    * This will return a peer to us with a connect socket
+    * (so an outbound peer) from the list of available peers
+    * provided to us (originally from the configuration file).
     */
-    private void establishLRPeers(RingAddress initialPeer)
+    private RingPeer getOnlineOutboundPeer()
     {
         /* Get a working RingPeer (connection) */
         RingPeer chosenPeer = getAvailablePeering();
@@ -114,33 +117,8 @@ public final class RingClient : Thread
             chosenPeer = getAvailablePeering();
         }
 
-        gprintln("Selected peer (connect-success): "~chosenPeer.toString());
-
-        /* Authenticate the peer (outbound) */
-        chosenPeer.authenticateOutbound();
-    }
-
-    /**
-    * Set the left peer (unsafe, not memory unsafe but it must be locked for algorithmn)
-    *
-    * a.k.a. use this within `client.lockPeering() <-> (your code) <-> client.unlockPeering()`
-    */
-    public void setLeft(RingPeer left)
-    {
-        this.left = left;
-    }
-
-    /**
-    * Set the right peer (unsafe, not memory unsafe but it must be locked for algorithmn)
-    *
-    * a.k.a. use this within `client.lockPeering() <-> (your code) <-> client.unlockPeering()`
-    */
-    public void setRight(RingPeer right)
-    {
-        this.right = right;
-    }
-
-    
+        return chosenPeer;
+    }  
 
     /**
     * Goes through each peer in availablePeers and attempts to
@@ -173,24 +151,6 @@ public final class RingClient : Thread
         return chosenPeer;
     }
 
-    /**
-    * Returns a random peer address from the available
-    * ones provided
-    */
-    private RingAddress selectRandomPeer()
-    {
-        RingAddress chosenPeer;
-
-        // import std.random : dice;
-        // dice()
-
-        chosenPeer = availablePeers[0];
-
-        return chosenPeer;
-    }
-
-
-
     public RingIdentity getIdentity()
     {
         return identity;
@@ -204,12 +164,6 @@ public final class RingClient : Thread
     public void unlockPeering()
     {
         peeringLock.unlock();
-    }
-
-    public bool unsafe_isPeered()
-    {
-        /* TODO: Implement me */
-        return true;
     }
 
 
