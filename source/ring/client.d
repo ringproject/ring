@@ -117,6 +117,15 @@ public final class RingClient : Thread
     {
         /* Get a working RingPeer (connection) */
         RingPeer selectedPeer = getAvailablePeering();
+
+        while(selectedPeer is null)
+        {
+            gprintln("No peers were available for a connection, sleeping a little zzz...", DebugType.WARNING);
+            Thread.sleep(dur!("seconds")(2));
+            
+            selectedPeer = getAvailablePeering();
+        }
+
         gprintln("Selected peer (connect-success): "~selectedPeer.toString());
 
         /* TODO: Authenticate (Gives us right hand peer) */
@@ -133,24 +142,25 @@ public final class RingClient : Thread
     private RingPeer getAvailablePeering()
     {
         /* Try connecting to one of the peers, move to next if fail */
-        RingPeer ringPeer;
+        RingPeer selectedPeer;
         foreach(RingAddress ringAddress; availablePeers)
         {
             /* Create a RingPeer */
-            ringPeer = new RingPeer(ringAddress, identity);
+            RingPeer ringPeer = new RingPeer(ringAddress, identity);
 
             try
             {
                 ringPeer.doConnect();
+                selectedPeer = ringPeer;
                 break;
             }
             catch(SocketOSException e)
             {
-
+                gprintln("Moving to next node, as "~ringPeer.toString()~" failed to connect", DebugType.WARNING);
             }
         }
 
-        return ringPeer;
+        return selectedPeer;
     }
 
     /**
@@ -167,5 +177,12 @@ public final class RingClient : Thread
         selectedPeer = availablePeers[0];
 
         return selectedPeer;
+    }
+
+
+
+    public RingIdentity getIdentity()
+    {
+        return identity;
     }
 }

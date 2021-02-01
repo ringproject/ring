@@ -65,6 +65,12 @@ public final class RingRemoteClient : Thread
             ubyte nameLen = payload[1];
             string name = cast(string)payload[2..2+nameLen];
             gprintln("Node wants to authenticate with name "~name);
+
+            /* TODO: Send (our) [nameLen, name] as per README.md */
+            byte[] authMessage;
+            authMessage ~= [0, cast(byte)client.getIdentity().getName().length];
+            authMessage ~= client.getIdentity().getName();
+            sendMessage(socket, authMessage);
         }
     }
 }
