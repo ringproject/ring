@@ -60,8 +60,12 @@ public final class RingRemoteClient : Thread
         ubyte command = payload[0];
         gprintln("Processing: "~to!(string)(payload));
 
+        /* Authentication */
         if(command == 0)
         {
+            /* Lock the peering mutex */
+            client.lockPeering();
+
             ubyte nameLen = payload[1];
             string name = cast(string)payload[2..2+nameLen];
             gprintln("Node wants to authenticate with name "~name);
@@ -71,6 +75,11 @@ public final class RingRemoteClient : Thread
             authMessage ~= [0, cast(byte)client.getIdentity().getName().length];
             authMessage ~= client.getIdentity().getName();
             sendMessage(socket, authMessage);
+
+
+
+            /* Unlock the peering mutex */
+            client.unlockPeering();
         }
     }
 }

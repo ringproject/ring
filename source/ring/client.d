@@ -135,7 +135,7 @@ public final class RingClient : Thread
         foreach(RingAddress ringAddress; availablePeers)
         {
             /* Create a RingPeer */
-            RingPeer ringPeer = new RingPeer(ringAddress, identity);
+            RingPeer ringPeer = new RingPeer(ringAddress, identity, this);
 
             try
             {

@@ -5,6 +5,7 @@ import ring.address;
 import bmessage;
 import ring.identity;
 import gogga;
+import ring.client;
 
 public final class RingPeer
 {
@@ -12,6 +13,7 @@ public final class RingPeer
     * My details
     */
     private RingIdentity identity;
+    private RingClient client;
 
     /**
     * Peer's connection
@@ -19,10 +21,11 @@ public final class RingPeer
     private Socket socket;
     private RingAddress peerAddress;
 
-    this(RingAddress peerAddress, RingIdentity identity)
+    this(RingAddress peerAddress, RingIdentity identity, RingClient client)
     {
         this.peerAddress = peerAddress;
         this.identity = identity;
+        this.client = client;
     }
 
     public void doConnect()
@@ -34,6 +37,9 @@ public final class RingPeer
 
     public RingPeer authenticate()
     {
+        /* Lock the peering mutex */
+        client.lockPeering();
+
         /* TODO: Send (our) [nameLen, name] as per README.md (auth-init) */
         byte[] authMessage;
         authMessage ~= [0, cast(byte)identity.getName().length];
@@ -59,7 +65,8 @@ public final class RingPeer
 
         /* TODO: Receive [keyLen, key] as per README.md */
 
-
+        /* Unlock the peering mutex */
+        client.unlockPeering();
 
         return rightHandPeer;
     }
