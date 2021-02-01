@@ -87,7 +87,7 @@ public final class RingClient : Thread
     */
     private void worker()
     {
-        /* Start the listening post (Accept inbound connections (for peering) */
+        /* Start the listening post (Accept inbound connections (for peering)) */
         listeningPost.start();
         
 

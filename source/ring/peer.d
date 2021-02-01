@@ -88,7 +88,7 @@ public final class RingPeer : Thread
     private void handlePeerInbound_process(byte[] payload)
     {
         ubyte command = payload[0];
-        gprintln("Processing: " ~ to!(string)(payload));
+        //gprintln("Processing: " ~ to!(string)(payload));
 
         /* Authentication */
         if (command == 0)
@@ -117,43 +117,9 @@ public final class RingPeer : Thread
             gprintln("(Outbound) Not connected, attempting...", DebugType.WARNING);
         }
 
-        /* TODO: Send (our) [nameLen, name] as per README.md (auth-init) */
-        byte[] authMessage;
-        authMessage ~= [0, cast(byte) identity.getName().length];
-        authMessage ~= identity.getName();
-        sendMessage(socket, authMessage);
-
-        /* TODO: Receive (their) [nameLen, name] as per README.md */
-        byte[] authMessageRemote;
-        receiveMessage(socket, authMessageRemote);
-        gprintln(authMessageRemote);
-        ubyte nameLen = authMessageRemote[0];
-        string name = cast(string) authMessageRemote[1 .. 1 + nameLen];
-        gprintln("(Outgoing) Node replied with name " ~ name);
-        peerName = name;
-
-        /* TODO: Receive [keyLen, key] as per README.md */
-        string key = "outboundTempKey";
-
-        /**
-        * If both are empty then L=newPeer and R=newPeer
-        *
-        * TODO: Check for mutex use if really needed here
-        */
-        if (client.left is null && client.right is null)
-        {
-            client.right = this;
-            client.left = client.right;
-
-            gprintln("(client.d) Both L=null and R=null case", DebugType.WARNING);
-        }
-        else
-        {
-            client.right = this;
-            gprintln("(client.d) R=null case", DebugType.WARNING);
-        }
-
-        gprintln("(client.d) State now: " ~ client.toString());
+        byte[] authCommand = [0];
+        sendMessage(socket, authCommand);
+        
 
         /* Authentication has worked, state it as so */
         client.isConnected = true;
@@ -183,44 +149,7 @@ public final class RingPeer : Thread
             gprintln("(Inbound) Not connected, attempting...", DebugType.WARNING);
         }
 
-        /* Get (their) [nameLen, name] */
-        ubyte nameLen = payload[1];
-        string name = cast(string) payload[2 .. 2 + nameLen];
-        gprintln("(Ingoing) Node wants to authenticate with name " ~ name);
 
-        /* TODO: Get (their) [keyLen, key] */
-        string key = "inboundTempKey";
-
-        /* TODO: Send (our) [nameLen, name] as per README.md */
-        byte[] authMessage;
-        authMessage ~= [cast(byte) client.getIdentity().getName().length];
-        authMessage ~= client.getIdentity().getName();
-        sendMessage(socket, authMessage);
-
-        /* TODO: Send (our) [keyLen, key] */
-
-        this.peerAddress = new RingAddress(key, socket.remoteAddress);
-
-        /**
-            * If both are empty then L=newPeer and R=newPeer
-            *
-            * TODO: Check for mutex use if really needed here
-            */
-        RingPeer chosenPeer = this;
-        if (client.left is null && client.right is null)
-        {
-            client.right = chosenPeer;
-            client.left = client.right;
-
-            gprintln("(remote.d) Both L=null and R=null case", DebugType.WARNING);
-        }
-        else
-        {
-            client.right = chosenPeer;
-            gprintln("(remote.d) R=null case", DebugType.WARNING);
-        }
-
-        gprintln("(remote.d) State now: " ~ client.toString());
 
 
         /* Authentication has worked, state it as so */
