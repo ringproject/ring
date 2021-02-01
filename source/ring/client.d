@@ -3,7 +3,6 @@ module ring.client;
 import ring.address;
 import ring.identity;
 import ring.peer;
-import ring.remote;
 import core.thread;
 import std.socket;
 import core.sync.mutex;
@@ -17,7 +16,7 @@ public final class RingClient : Thread
     * Client details
     */
     private RingIdentity identity;
-    private RingRemoteClient[] remoteClients;
+    private RingPeer[] remoteClients;
     private Mutex remoteClientsLock;
     private RingListener listeningPost;
     private Mutex peeringLock; /* TODO: See if we need this */
@@ -117,33 +116,8 @@ public final class RingClient : Thread
 
         gprintln("Selected peer (connect-success): "~chosenPeer.toString());
 
-        /* TODO: Authenticate */
-        lockPeering();
-
-
-        /**
-        * If both are empty then L=newPeer and R=newPeer
-        *
-        * TODO: Check for mutex use if really needed here
-        */
-        if(left is null && right is null)
-        {
-            right = chosenPeer;
-            left = right;
-
-            gprintln("(client.d) Both L=null and R=null case", DebugType.WARNING);
-        }
-        else
-        {
-            right = chosenPeer.authenticateOutbound();
-            gprintln("(client.d) R=null case", DebugType.WARNING);
-        }
-        
-
-        gprintln("(client.d) State now: "~this.toString());
-        unlockPeering();
-
-        
+        /* Authenticate the peer (outbound) */
+        chosenPeer.authenticateOutbound();
     }
 
     /**
