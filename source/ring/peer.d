@@ -119,6 +119,7 @@ public final class RingPeer : Thread
         peerName = name;
 
         /* TODO: Receive [keyLen, key] as per README.md */
+        string key = "outboundTempKey";
 
         /**
         * If both are empty then L=newPeer and R=newPeer
@@ -152,15 +153,23 @@ public final class RingPeer : Thread
         /* Lock the peering mutex */
         client.lockPeering();
 
+        /* Get (their) [nameLen, name] */
         ubyte nameLen = payload[1];
         string name = cast(string) payload[2 .. 2 + nameLen];
         gprintln("(Ingoing) Node wants to authenticate with name " ~ name);
+
+        /* TODO: Get (their) [keyLen, key] */
+        string key = "inboundTempKey";
 
         /* TODO: Send (our) [nameLen, name] as per README.md */
         byte[] authMessage;
         authMessage ~= [cast(byte) client.getIdentity().getName().length];
         authMessage ~= client.getIdentity().getName();
         sendMessage(socket, authMessage);
+
+        /* TODO: Send (our) [keyLen, key] */
+
+        this.peerAddress = new RingAddress(key, socket.remoteAddress);
 
         /**
             * If both are empty then L=newPeer and R=newPeer
@@ -189,15 +198,15 @@ public final class RingPeer : Thread
 
     public override string toString()
     {
-        /* If we are an inbound node */
-        if(peerAddress is null)
-        {
-            return socket.toString();
-        }
-        /* If we are an outbound node */
-        else
-        {
+        // /* If we are an inbound node */
+        // if(peerAddress is null)
+        // {
+        //     return socket.toString();
+        // }
+        // /* If we are an outbound node */
+        // else
+        // {
             return peerAddress.toString();
-        }
+        // }
     }
 }
