@@ -131,7 +131,7 @@ public final class RingClient : Thread
     private RingPeer getAvailablePeering()
     {
         /* Try connecting to one of the peers, move to next if fail */
-        RingPeer selectedPeer;
+        RingPeer chosenPeer;
         foreach(RingAddress ringAddress; availablePeers)
         {
             /* Create a RingPeer */
@@ -140,7 +140,7 @@ public final class RingClient : Thread
             try
             {
                 ringPeer.doConnect();
-                selectedPeer = ringPeer;
+                chosenPeer = ringPeer;
                 break;
             }
             catch(SocketOSException e)
@@ -149,7 +149,7 @@ public final class RingClient : Thread
             }
         }
 
-        return selectedPeer;
+        return chosenPeer;
     }
 
     /**
@@ -158,14 +158,14 @@ public final class RingClient : Thread
     */
     private RingAddress selectRandomPeer()
     {
-        RingAddress selectedPeer;
+        RingAddress chosenPeer;
 
         // import std.random : dice;
         // dice()
 
-        selectedPeer = availablePeers[0];
+        chosenPeer = availablePeers[0];
 
-        return selectedPeer;
+        return chosenPeer;
     }
 
 
