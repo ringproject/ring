@@ -181,7 +181,7 @@ public final class RingPeer : Thread
             gprintln("(remote.d) R=null case", DebugType.WARNING);
         }
 
-        gprintln("(remote.d) State now: " ~ this.toString());
+        gprintln("(remote.d) State now: " ~ client.toString());
 
         /* Unlock the peering mutex */
         client.unlockPeering();
@@ -189,6 +189,15 @@ public final class RingPeer : Thread
 
     public override string toString()
     {
-        return peerAddress.toString();
+        /* If we are an inbound node */
+        if(peerAddress is null)
+        {
+            return socket.toString();
+        }
+        /* If we are an outbound node */
+        else
+        {
+            return peerAddress.toString();
+        }
     }
 }
