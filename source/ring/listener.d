@@ -3,10 +3,10 @@ module ring.listener;
 import core.thread;
 import std.socket;
 import ring.listener;
-import ring.remote;
 import gogga;
 import ring.client;
 import std.conv : to;
+import ring.peer;
 
 public final class RingListener : Thread
 {
@@ -44,7 +44,7 @@ public final class RingListener : Thread
             gprintln("ListeningPost: New connection "~to!(string)(remoteSocket));
 
             /* Create a new connection handler */
-            RingRemoteClient remoteClient = new RingRemoteClient(remoteSocket, client);
+            RingPeer remoteClient = new RingPeer(remoteSocket, client);
 
             /* TODO: Add to connection queue */
 

@@ -7,6 +7,7 @@ import ring.identity;
 import gogga;
 import ring.client;
 import core.thread;
+import std.conv : to;
 
 public final class RingPeer : Thread
 {
@@ -112,8 +113,7 @@ public final class RingPeer : Thread
             *
             * TODO: Check for mutex use if really needed here
             */
-            import ring.peer;
-            chosenPeer = new RingPeer();
+            RingPeer chosenPeer = this;
             if(client.left is null && client.right is null)
             {
                 client.right = chosenPeer;
@@ -123,7 +123,7 @@ public final class RingPeer : Thread
             }
             else
             {
-                client.right = chosenPeer.authenticate();
+                client.right = chosenPeer;
                 gprintln("(remote.d) R=null case", DebugType.WARNING);
             }
             

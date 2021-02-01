@@ -135,7 +135,7 @@ public final class RingClient : Thread
         }
         else
         {
-            right = chosenPeer.authenticate();
+            right = chosenPeer.authenticateOutbound();
             gprintln("(client.d) R=null case", DebugType.WARNING);
         }
         
