@@ -25,8 +25,8 @@ public final class RingClient : Thread
     /**
     * Peer info
     */
-    private RingPeer left;
-    private RingPeer right;
+    public RingPeer left;
+    public RingPeer right;
 
     /**
     * Peering info
