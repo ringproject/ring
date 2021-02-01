@@ -20,6 +20,7 @@ public final class RingClient : Thread
     private RingRemoteClient[] remoteClients;
     private Mutex remoteClientsLock;
     private RingListener listeningPost;
+    private Mutex peeringLock; /* TODO: See if we need this */
 
     /**
     * Peer info
@@ -161,5 +162,15 @@ public final class RingClient : Thread
     public RingIdentity getIdentity()
     {
         return identity;
+    }
+
+    public void lockPeering()
+    {
+        peeringLock.lock();
+    }
+
+    public void unlockPeering()
+    {
+        peeringLock.unlock();
     }
 }
