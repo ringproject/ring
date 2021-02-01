@@ -109,6 +109,10 @@ public final class RingPeer : Thread
         if(client.isConnected)
         {
             gprintln("(Outbound) Already connected, stopping", DebugType.WARNING);
+
+            /* Close our outbound connection */
+            socket.close();
+            
             client.unlockPeering();
             return;
         }
