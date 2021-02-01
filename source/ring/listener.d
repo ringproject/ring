@@ -13,6 +13,13 @@ public final class RingListener : Thread
     private Socket listeningPost;
     private RingClient client;
 
+    /**
+    * Constructs a new RingListener to accept inbound
+    * connections
+    *
+    * Requires the `address` to bind to and listen on
+    * along with the associated RingClient, `client`
+    */
     this(Address address, RingClient client)
     {
         super(&listenPost);
