@@ -20,6 +20,7 @@ public final class RingPeer
     */
     private Socket socket;
     private RingAddress peerAddress;
+    private string peerName;
 
     this(RingAddress peerAddress, RingIdentity identity, RingClient client)
     {
@@ -52,7 +53,8 @@ public final class RingPeer
         gprintln(authMessageRemote);
         ubyte nameLen = authMessageRemote[0];
         string name = cast(string)authMessageRemote[1..1+nameLen];
-        gprintln("Node replied with name "~name);
+        gprintln("(Outgoing) Node replied with name "~name);
+        peerName = name;
 
 
 
