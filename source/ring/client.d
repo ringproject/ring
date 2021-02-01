@@ -105,17 +105,17 @@ public final class RingClient : Thread
     private void establishLRPeers(RingAddress initialPeer)
     {
         /* Get a working RingPeer (connection) */
-        RingPeer selectedPeer = getAvailablePeering();
+        RingPeer chosenPeer = getAvailablePeering();
 
-        while(selectedPeer is null)
+        while(chosenPeer is null)
         {
             gprintln("No peers were available for a connection, sleeping a little zzz...", DebugType.WARNING);
             Thread.sleep(dur!("seconds")(2));
 
-            selectedPeer = getAvailablePeering();
+            chosenPeer = getAvailablePeering();
         }
 
-        gprintln("Selected peer (connect-success): "~selectedPeer.toString());
+        gprintln("Selected peer (connect-success): "~chosenPeer.toString());
 
         /* TODO: Authenticate */
         lockPeering();
@@ -128,14 +128,14 @@ public final class RingClient : Thread
         */
         if(left is null && right is null)
         {
-            right = selectedPeer.authenticate();
+            right = chosenPeer;
             left = right;
 
             gprintln("(client.d) Both L=null and R=null case", DebugType.WARNING);
         }
         else
         {
-            right = selectedPeer.authenticate();
+            right = chosenPeer.authenticate();
             gprintln("(client.d) R=null case", DebugType.WARNING);
         }
         
